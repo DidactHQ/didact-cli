@@ -45,7 +45,7 @@ app.Configure(config =>
 
     config.AddBranch("engine", engine =>
     {
-        engine.AddCommand<EngineInstallCommand>("install")
+        engine.AddCommand<EngineInstallCommand>("install") // run "didact engine set" after installation? --set-after-install true ?
             .WithDescription("Installs Didact Engine to the target location.");
         engine.AddCommand<TestCommand>("set")
             .WithDescription("Sets the target Didact Engine.");
@@ -53,7 +53,7 @@ app.Configure(config =>
             .WithDescription("Gets the target Didact Engine.");
         engine.AddBranch("config", config =>
         {
-            config.AddCommand<TestCommand>("generate") // --open true option for autoopening config file.
+            config.AddCommand<TestCommand>("generate") // --open true option for autoopening config file. // --with-file "" option for using existing config file.
                 .WithDescription("Generates a new runtime environment variables file for Didact Engine.");
             config.AddCommand<TestCommand>("get")
                 .WithDescription("Gets the runtime environment variables file for Didact Engine.");
