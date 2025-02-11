@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System.Reflection;
 
 AnsiConsole.Write(
     new FigletText("Didact Cli")
@@ -14,10 +15,21 @@ AnsiConsole.Write(
 
 #region Setup and bind the appsettings.
 
+var assembly = Assembly.GetExecutingAssembly();
+var assemblyName = assembly.GetName().Name;
+var resourceFileName = $"{assemblyName}.appsettings.json";
+
+// Fetch the appsettings.json file as an embedded resource.
+var stream = assembly.GetManifestResourceStream(resourceFileName);
+var reader = new StreamReader(stream!);
+var json = reader.ReadToEnd();
+
+// Create a new IConfiguration.
 var iConfiguration = new ConfigurationBuilder()
-    .SetBasePath(AppContext.BaseDirectory) // Ensure correct file path
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddJsonStream(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json)))
     .Build();
+
+// Bind to the appsettings class.
 var appSettings = new AppSettings();
 iConfiguration.Bind(appSettings);
 
