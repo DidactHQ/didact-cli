@@ -17,7 +17,11 @@ AnsiConsole.Write(
 
 var assembly = Assembly.GetExecutingAssembly();
 var assemblyName = assembly.GetName().Name;
-var resourceFileName = $"{assemblyName}.appsettings.json";
+var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+// Support multi-environment appsettings files.
+var resourceFileName = string.IsNullOrEmpty(environment)
+    ? $"{assemblyName}.appsettings.json"
+    : $"{assemblyName}.appsettings.{environment}.json";
 
 // Fetch the appsettings.json file as an embedded resource.
 var stream = assembly.GetManifestResourceStream(resourceFileName);
